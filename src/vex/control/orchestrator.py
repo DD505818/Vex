@@ -15,7 +15,7 @@ class Orchestrator:
     settings: AppSettings
 
     def __post_init__(self) -> None:
-        self.market_state_builder = MarketStateBuilder()
+        self.market_state_builder = MarketStateBuilder(settings=self.settings)
         self.consensus_engine = ConsensusEngine(
             min_projected_r_multiple=self.settings.min_projected_r_multiple
         )
