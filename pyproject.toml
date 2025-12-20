@@ -1,0 +1,22 @@
+[project]
+name = "vex"
+version = "0.1.0"
+description = "VEX Ultimate trading terminal core service"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+authors = [
+  { name = "VEX" }
+]
+dependencies = [
+  "fastapi>=0.115.0",
+  "pydantic>=2.7.0",
+  "pydantic-settings>=2.2.1",
+  "uvicorn>=0.30.0"
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
