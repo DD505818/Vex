@@ -10,5 +10,9 @@ class AppSettings(BaseSettings):
     decision_interval_seconds: int = 5
     max_risk_per_trade: float = 0.005
     min_projected_r_multiple: float = 5.0
+    default_market_regime: str = "trend"
+    default_last_price: float = 101.0
+    default_vwap: float = 100.0
+    default_volatility: float = 0.01
 
     model_config = SettingsConfigDict(env_prefix="VEX_")
