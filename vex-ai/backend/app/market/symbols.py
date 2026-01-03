@@ -1,0 +1,1 @@
+SYMBOLS = ["BTCUSD", "ETHUSD", "SOLUSD", "AAPL"]
