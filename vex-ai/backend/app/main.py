@@ -8,6 +8,7 @@ from app.engine.engine import Engine
 from app.execution.live_guard import LiveGuard
 from app.execution.router import ExecutionRouter
 from app.risk.cost_engine import CostEngine
+from app.risk.kill_switch import get_kill_switch
 from app.risk.limits import RiskLimits
 from app.risk.risk_engine import RiskEngine
 from app.utils.logging import setup_logging
@@ -17,8 +18,9 @@ logger = setup_logging()
 live_guard = LiveGuard()
 cost_engine = CostEngine()
 risk_engine = RiskEngine(RiskLimits())
-execution_router = ExecutionRouter(live_guard)
-engine = Engine(execution_router, cost_engine, risk_engine)
+kill_switch = get_kill_switch()
+execution_router = ExecutionRouter(live_guard, kill_switch)
+engine = Engine(execution_router, cost_engine, risk_engine, kill_switch)
 routes_system.EngineWrapper.engine = engine
 if not hasattr(routes_system.router, "extra"):
     routes_system.router.extra = {}

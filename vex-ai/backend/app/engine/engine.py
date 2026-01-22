@@ -7,15 +7,23 @@ from app.engine.ranking import rank_intents
 from app.execution.router import ExecutionRouter
 from app.market.feed import tick_stream
 from app.risk.cost_engine import CostEngine
+from app.risk.kill_switch import KillSwitch
 from app.risk.risk_engine import RiskEngine
 from app.storage.ledger import append_entry
 
 
 class Engine:
-    def __init__(self, router: ExecutionRouter, cost_engine: CostEngine, risk_engine: RiskEngine):
+    def __init__(
+        self,
+        router: ExecutionRouter,
+        cost_engine: CostEngine,
+        risk_engine: RiskEngine,
+        kill_switch: KillSwitch,
+    ):
         self.router = router
         self.cost_engine = cost_engine
         self.risk_engine = risk_engine
+        self.kill_switch = kill_switch
         self.running = False
         self.broadcast_callbacks: List = []
 
@@ -34,6 +42,15 @@ class Engine:
             costs = [self.cost_engine.estimate(intent, tick) for intent in intents]
             ranked = rank_intents(intents, costs)
             for _, intent, cost in ranked:
+                if self.kill_switch.triggered:
+                    result = {"status": "rejected", "detail": "Kill switch triggered"}
+                    append_entry(
+                        {"intent": intent.model_dump(), "cost": cost.model_dump(), "result": result}
+                    )
+                    await self._broadcast(
+                        {"intent": intent.model_dump(), "cost": cost.model_dump(), "result": result}
+                    )
+                    continue
                 assessment = self.risk_engine.assess(intent, cost)
                 if assessment.approved:
                     result = await self.router.route(intent, cost)

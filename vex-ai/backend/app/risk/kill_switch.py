@@ -7,3 +7,10 @@ class KillSwitch:
 
     def resume(self):
         self.triggered = False
+
+
+_shared_kill_switch = KillSwitch()
+
+
+def get_kill_switch() -> KillSwitch:
+    return _shared_kill_switch
