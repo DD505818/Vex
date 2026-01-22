@@ -1,5 +1,7 @@
 import axios from 'axios'
 
-const client = axios.create({ baseURL: 'http://localhost:8000' })
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
+const client = axios.create({ baseURL })
 
 export const getHealth = async () => (await client.get('/health')).data
