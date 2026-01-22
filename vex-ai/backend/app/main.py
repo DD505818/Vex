@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import routes_portfolio, routes_risk, routes_system, routes_trading, ws
+from app.config import get_settings
 from app.engine.engine import Engine
 from app.execution.live_guard import LiveGuard
 from app.execution.router import ExecutionRouter
@@ -41,10 +42,15 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="VEX AI ELITE", lifespan=lifespan)
+settings = get_settings()
+allowed_origins = settings.allowed_origins
+allow_credentials = "*" not in allowed_origins
+if "*" in allowed_origins:
+    allowed_origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=allowed_origins,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
