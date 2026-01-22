@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import routes_portfolio, routes_risk, routes_system, routes_trading, ws
+from app.api.routes_ai import router as ai_router
 from app.engine.engine import Engine
 from app.execution.live_guard import LiveGuard
 from app.execution.router import ExecutionRouter
@@ -54,6 +55,7 @@ app.include_router(routes_trading.router)
 app.include_router(routes_portfolio.router)
 app.include_router(routes_risk.router)
 app.include_router(ws.router)
+app.include_router(ai_router)
 
 
 @app.get("/health")
