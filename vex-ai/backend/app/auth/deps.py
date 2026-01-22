@@ -24,7 +24,15 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 def require_role(role: str):
     def wrapper(user: User = Depends(get_current_user)) -> User:
         roles_order = ["VIEWER", "TRADER", "ADMIN"]
-        if roles_order.index(user.role) < roles_order.index(role):
+        normalized_user_role = (user.role or "").upper()
+        normalized_required_role = (role or "").upper()
+        if normalized_user_role not in roles_order:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unknown role")
+        if normalized_required_role not in roles_order:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Unknown required role"
+            )
+        if roles_order.index(normalized_user_role) < roles_order.index(normalized_required_role):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient role")
         return user
 
