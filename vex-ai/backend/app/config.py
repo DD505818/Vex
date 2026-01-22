@@ -5,7 +5,7 @@ from pydantic import Field
 class Settings(BaseSettings):
     app_name: str = "VEX AI ELITE"
     trading_mode: str = Field(default="PAPER", pattern="^(PAPER|LIVE)$")
-    jwt_secret: str = "vex-secret"
+    jwt_secret: str = Field(..., env="JWT_SECRET")
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
     live_arm_duration_minutes: int = 10
